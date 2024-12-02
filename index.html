@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список задач</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        #taskInput {
+            width: 70%;
+            padding: 10px;
+        }
+        #addTaskButton {
+            padding: 10px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #fff;
+            margin: 10px 0;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .deleteButton {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Список задач</h1>
+    <input type="text" id="taskInput" placeholder="Введите задачу...">
+    <button id="addTaskButton">Добавить задачу</button>
+    
+    <ul id="taskList"></ul>
+
+    <script>
+        // Получаем элементы из DOM
+        const taskInput = document.getElementById('taskInput');
+        const addTaskButton = document.getElementById('addTaskButton');
+        const taskList = document.getElementById('taskList');
+
+        // Загружаем задачи из localStorage
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        renderTasks();
+
+        // Добавляем задачу
+        addTaskButton.addEventListener('click', () => {
+            const taskText = taskInput.value.trim();
+            if (taskText) {
+                tasks.push(taskText);
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                renderTasks();
+                taskInput.value = ''; // Очищаем поле ввода
+            }
+        });
+
+        // Удаляем задачу
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        // Отображаем задачи
+        function renderTasks() {
+            taskList.innerHTML = ''; // Очищаем список
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.textContent = task;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Удалить';
+                deleteButton.className = 'deleteButton';
+                deleteButton.onclick = () => deleteTask(index);
+
+                li.appendChild(deleteButton);
+                taskList.appendChild(li);
+            });
+        }
+    </script>
+
+</body>
+</html>
